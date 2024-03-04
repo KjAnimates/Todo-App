@@ -32,6 +32,10 @@ public class Program
                     ForegroundColor = ConsoleColor.Yellow;
 
                     WriteLine($"{task.TaskName}");
+
+                    ForegroundColor = ConsoleColor.Green;
+                    WriteLine("      {0}", task.Description);
+
                     ResetColor();
                 }
             }
