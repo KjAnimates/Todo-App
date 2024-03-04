@@ -5,7 +5,7 @@ namespace TodoApp;
 
 public class Program
 {
-    public static List<string> Tasks = new();
+    public static List<Task> Tasks = new();
 
     public static void Main(String[] Args)
     {
@@ -23,12 +23,15 @@ public class Program
                 // For every task, print it!
                 for (int i = 0; i < Tasks.Count; i++)
                 {
-                    string Task = Tasks[i];
+                    Task task = Tasks[i];
+
                     ForegroundColor = ConsoleColor.Blue;
+
                     Write($"  [{i + 1}] ");
 
                     ForegroundColor = ConsoleColor.Yellow;
-                    WriteLine($"{Tasks[i]}");
+
+                    WriteLine($"{task.TaskName}");
                     ResetColor();
                 }
             }
@@ -56,7 +59,7 @@ public class Program
                     case "add":
                         // Ask the user for the name of the new task.
                         Write("Name: ");
-                        string? newTask = ReadLine();
+                        Task? newTask = new(ReadLine());
 
                         // add the task to the list.
                         if (newTask != null)
@@ -80,13 +83,13 @@ public class Program
                         if (num >= 0 && num < Tasks.Count)
                         {
                             // Create a new tasks variable.
-                            List<string> newTasks = new();
+                            List<Task> newTasks = new();
 
-                            foreach(string task in Tasks)
+                            foreach(Task task in Tasks)
                             {
                                 // check if the current task matches the indexed task.
                                 // If it does, don't add it to the new tasks list.
-                                if (task != Tasks[num]) newTasks.Add(task);
+                                if (task.TaskName != Tasks[num].TaskName) newTasks.Add(task);
                             }
 
                             // Set the task list to the new tasks list.
