@@ -8,13 +8,17 @@ namespace TodoApp
         // The list of options that will be displayed.
         public List<string> Options = new();
         public string? Prompt;
+        public string SelectedText { get; }
 
-        public int SelectedIndex = 0;
-        public string SelectedText = "";
+        private int SelectedIndex = 0;
 
-        public Menu() { }
+        public Menu() 
+        {
+            SelectedIndex = 0;
+            SelectedText = "";
+        }
 
-        public Menu(List<string> options)
+        public Menu(List<string> options) : this()
         {
             this.Options = options;
         }
@@ -28,7 +32,7 @@ namespace TodoApp
         /// Clears the screen and displays the options
         /// that can be selected.
         /// </summary>
-        public void Start()
+        public int Start()
         {
             bool running = true;
             SelectedIndex = 0;
@@ -65,7 +69,7 @@ namespace TodoApp
                         break;
                     case ConsoleKey.Escape:
                         running = false;
-                        SelectedIndex = -1;
+                        SelectedIndex = -1; // So nothing gets selected because we escaped
                         break;
                     case ConsoleKey.Enter:
                         running = false;
@@ -74,6 +78,8 @@ namespace TodoApp
                         break;
                 }
             }
+
+            return SelectedIndex;
         }
 
         private void PrintOption(string option, bool selected)
