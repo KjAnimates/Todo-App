@@ -1,2 +1,3 @@
-(3/3/2024) - Added Comments
-* Added comments
+(3/7/2024)
+ - Opted to use menus instead of commands
+ - Removed list numbering and added index numbering.
