@@ -86,7 +86,7 @@ namespace TodoApp
 
                 if (ShowNumbers)
                 {
-                    Console.WriteLine($" > {number + 1}. {option}");
+                    Console.WriteLine($" > {number}. {option}");
                 }
                 else
                 {
@@ -101,7 +101,7 @@ namespace TodoApp
 
                 if (ShowNumbers)
                 {
-                    Console.WriteLine($"   {number + 1}. {option}");
+                    Console.WriteLine($"   {number}. {option}");
                 }
                 else
                 {
