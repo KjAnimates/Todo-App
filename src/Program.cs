@@ -7,22 +7,32 @@ public class Program
 {
     public static List<Task> Tasks = new();
 
-    public static void ListTasks ()
+    public static int ListTasks ()
     {
-        for (int i = 0; i < Tasks.Count; i++)
+        // for (int i = 0; i < Tasks.Count; i++)
+        // {
+        //     Task task = Tasks[i];
+        //     int listIndex = i + 1;
+        //     string? taskName = task.TaskName;
+
+        //     ForegroundColor = ConsoleColor.Blue;
+        //     Write("  [{0}] ", listIndex);
+
+        //     ForegroundColor = ConsoleColor.Yellow;
+        //     WriteLine("{0}", taskName);
+
+        //     ResetColor();
+        // }
+
+        List<string> tasks = Task.GetNames(Tasks);
+
+        Menu menu = new()
         {
-            Task task = Tasks[i];
-            int listIndex = i + 1;
-            string? taskName = task.TaskName;
+            Options = tasks,
+            Prompt = "Your Tasks:"
+        };
 
-            ForegroundColor = ConsoleColor.Blue;
-            Write("  [{0}] ", listIndex);
-
-            ForegroundColor = ConsoleColor.Yellow;
-            WriteLine("{0}", taskName);
-
-            ResetColor();
-        }
+        return menu.Display();
     }
 
     public static void AddTask(Task task)
@@ -36,88 +46,75 @@ public class Program
         return ReadLine();
     }
 
+    public static void CreateNewTask()
+    {
+        Clear();
+
+        WriteLine("NEW TASK");
+        Write("Name: ");
+
+        string? name = ReadLine();
+        
+        if (!String.IsNullOrWhiteSpace(name))
+            AddTask(new Task(name));
+        else
+            CreateNewTask();
+    }
+
+    public static void RemoveTask(int index)
+    {
+        List<Task> result = new();
+
+        for(int i = 0; i < Tasks.Count; i++)
+        {
+            if (i == index && i != 0) continue;
+            result.Add(Tasks[i]);
+        }
+
+        Tasks = result;
+    }
+
     public static void Main(String[] Args)
     {
-        
+        Clear();
+
+        Tasks.Add(new Task("[ NEW ]"));
+        CreateNewTask();
+
         while(true)
         {
-            // Clear the Console
             Clear();
-
+            
             WriteLine("Console Todo App");
             WriteLine("Your Tasks:");
+    
+            int selection = ListTasks();
+            bool selectionIsValid = (selection >= 0) && (selection < Tasks.Count);
 
-            // Checks if there are tasks in the list
-            if(Tasks.Count > 0) ListTasks();
+            if (selectionIsValid == false)
+                throw new IndexOutOfRangeException("Selection is out of range of the task list.");
+
+            Task task = Tasks[selection];
+
+            if (selection == 0) CreateNewTask();
             else
             {
-                // Tell the user they are all caught up.
-                ForegroundColor = ConsoleColor.Green;
-                Write("  Woohoo! You're all done! :D");
-                ResetColor();
-                WriteLine();
-            }
+                Clear();
 
-            // Command line
-            // current commands:
-            //   * add
-            //   * rem
-            string? line = Prompt("Action: ");
-            
-            if (line != null)
-            {
-                switch (line.ToUpper().Trim())
+                // Show the options for the selected task.
+                TaskOperation taskOperation = task.DisplayOptions();
+
+                switch(taskOperation)
                 {
-                    // If the command is "add", create a new task.
-                    case "ADD":
-                        // Ask the user for the name of the new task.
-                        string? taskName = Prompt("Name: ");
-
-                        Task? newTask = new();
-
-                        if (taskName != null) newTask.TaskName = taskName;
-                        if (newTask != null) AddTask(newTask);
+                    case TaskOperation.DELETE:
+                        RemoveTask(selection);
                         break;
-                    // If the command is "rem", Remove a selected task.
-                    case "REM":
-                        // Ask the user for the number to remove.
-                        string? input = Prompt("#: ");
-
-                        // Parse the input to a number.
-                        _ = int.TryParse(input, out int num);
-
-                        // Subtract 1 from the number
-                        // (To match the numbering on the list)
-                        num--;
-
-                        if (num >= 0 && num < Tasks.Count)
-                        {
-                            // Create a new tasks variable.
-                            List<Task> newTasks = new();
-
-                            foreach(Task task in Tasks)
-                            {
-                                // check if the current task matches the indexed task.
-                                // If it does, don't add it to the new tasks list.
-                                if (task.TaskName != Tasks[num].TaskName) newTasks.Add(task);
-                            }
-
-                            // Set the task list to the new tasks list.
-                            Tasks = newTasks;
-                        }
-                        break;
-                    case "LIST":
+                    case TaskOperation.MODIFY:
                         Clear();
-                        
-                        WriteLine("LIST:");
-                        WriteLine("   add");
-                        WriteLine("   rem");
-
-                        ReadKey();
+                        WriteLine("Sorry, Can't do that just yet :)");
                         break;
-
                 }
-            }
+            }            
         }
     }
 }
